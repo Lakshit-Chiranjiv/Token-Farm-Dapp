@@ -55,4 +55,32 @@ contract('TokenFarm',(accounts)=>{
             assert.equal(balanceTokenFarm.toString(),tokensToWei('1000000'));
         })
     })
+
+    describe("Initially all accounts 1-5 have 200 dai tokens",async()=>{
+        it('accounts 1-5 get 200 dai tokens initially',async()=>{
+            for(let i = 1; i <= 5; i++){
+                const accountDaiBalance = await daiToken.balanceOf(accounts[i]);
+                assert.equal(accountDaiBalance.toString(),tokensToWei('200'));
+            }
+        })
+    })
+
+    describe("testing the stake function",async()=>{
+        it('account and contract balance should be correct after staking',async()=>{
+            await daiToken.approve(tokenFarm.address,tokensToWei('150'),{ from: accounts[1] })
+            await tokenFarm.stakeDaiTokens(tokensToWei('150'),{ from: accounts[1] })//this from address will act as the msg.sender in the contract
+            const accountDaiBalance = await daiToken.balanceOf(accounts[1]);
+            assert.equal(accountDaiBalance.toString(),tokensToWei('50'),'account 1 dai balance is correct after staking');
+
+            const tokenFarmContractDaiBalance = await daiToken.balanceOf(tokenFarm.address);
+            assert.equal(tokenFarmContractDaiBalance.toString(),tokensToWei('150'),'token farm contract dai balance is correct after staking');
+
+            const stakedMappingBalance = await tokenFarm.stakedDaiBalance(accounts[1]);
+            assert.equal(stakedMappingBalance.toString(),tokensToWei('150'),'mapping addr1 dai balance is correct after staking');
+
+            const hasStakedMappingValue = await tokenFarm.hasStaked(accounts[1]);
+            assert.equal(hasStakedMappingValue.toString(),'true','mapping hasStaked value is correct after staking');
+        })
+    })
+
 })
