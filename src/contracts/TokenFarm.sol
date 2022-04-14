@@ -14,4 +14,22 @@ contract TokenFarm{
         daiToken = _daiToken;
         dappToken = _dappToken;
     }
+
+    address[] public daiStakers;
+    mapping(address => uint) public stakedDaiBalance;
+    mapping(address => bool) public hasStaked;
+    mapping(address => bool) public isStaking;
+
+    //function to stake dai tokens
+    function stakeDaiTokens(uint amountOfTokens) public{
+        daiToken.transferFrom(msg.sender,address(this),amountOfTokens);
+        stakedDaiBalance[msg.sender] += amountOfTokens;
+
+        if(!hasStaked[msg.sender])
+            daiStakers.push(msg.sender);
+        
+        hasStaked[msg.sender] = true;
+        
+        isStaking[msg.sender] = true;
+    }
 }
