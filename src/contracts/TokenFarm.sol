@@ -10,7 +10,7 @@ contract TokenFarm{
     DappToken public dappToken;
 
     //constructor receives address of the deployed daitoken and dapptoken contract and then assigns it to separate state variables for further use and transactions
-    constructor(DaiToken _daiToken,DappToken _dappToken){
+    constructor(DaiToken _daiToken,DappToken _dappToken) public{
         daiToken = _daiToken;
         dappToken = _dappToken;
     }
