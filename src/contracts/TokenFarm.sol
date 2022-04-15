@@ -43,14 +43,19 @@ contract TokenFarm{
     }
 
     //function to unstake dai tokens
-    function unstakeDaiTokens() public{
+    function unstakeDaiTokens(uint amountToUnstake,bool totalUnstake) public{
+
         uint amountOfTokens = stakedDaiBalance[msg.sender];
         require(amountOfTokens > 0,"More than 0 dai tokens should be staked for unstaking");
 
-        daiToken.transfer(msg.sender,amountOfTokens);
-        stakedDaiBalance[msg.sender] = 0;
+        if(totalUnstake)
+            amountToUnstake = amountOfTokens; 
+
+        daiToken.transfer(msg.sender,amountToUnstake);
+        stakedDaiBalance[msg.sender] -= amountToUnstake;
         
-        isStaking[msg.sender] = false;
+        if(totalUnstake)
+            isStaking[msg.sender] = false;
     }
 
 
