@@ -42,6 +42,17 @@ contract TokenFarm{
         isStaking[msg.sender] = true;
     }
 
+    //function to unstake dai tokens
+    function unstakeDaiTokens() public{
+        uint amountOfTokens = stakedDaiBalance[msg.sender];
+        require(amountOfTokens > 0,"More than 0 dai tokens should be staked for unstaking");
+
+        daiToken.transfer(msg.sender,amountOfTokens);
+        stakedDaiBalance[msg.sender] = 0;
+        
+        isStaking[msg.sender] = false;
+    }
+
 
     //function to issue dapp tokens
     function issueDappTokens() onlyOwner public{
