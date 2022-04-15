@@ -100,15 +100,33 @@ contract('TokenFarm',(accounts)=>{
 
     describe("testing the unstake tokens function",async()=>{
         it('account and contract balance should be correct after unstake',async()=>{
+            //unstaking some amount
             await tokenFarm.unstakeDaiTokens(tokensToWei('100'),false,{ from: accounts[1] })//this from address will act as the msg.sender in the contract
-            const accountDaiBalance = await daiToken.balanceOf(accounts[1]);
+            let accountDaiBalance = await daiToken.balanceOf(accounts[1]);
             assert.equal(accountDaiBalance.toString(),tokensToWei('150'),'account 1 dai balance is correct after unstaking');
 
-            const tokenFarmContractDaiBalance = await daiToken.balanceOf(tokenFarm.address);
+            let tokenFarmContractDaiBalance = await daiToken.balanceOf(tokenFarm.address);
             assert.equal(tokenFarmContractDaiBalance.toString(),tokensToWei('50'),'token farm contract dai balance is correct after unstaking');
 
-            const stakedMappingBalance = await tokenFarm.stakedDaiBalance(accounts[1]);
+            let stakedMappingBalance = await tokenFarm.stakedDaiBalance(accounts[1]);
             assert.equal(stakedMappingBalance.toString(),tokensToWei('50'),'mapping addr1 dai balance is correct after unstaking');
+
+            let isStakingMappingValue = await tokenFarm.isStaking(accounts[1]);
+            assert.equal(isStakingMappingValue.toString(),'true','mapping addr1 isStaking value is correct after unstaking all amount');
+
+            //unstaking total amount
+            await tokenFarm.unstakeDaiTokens(tokensToWei('10'),true,{ from: accounts[1] })//this from address will act as the msg.sender in the contract
+            accountDaiBalance = await daiToken.balanceOf(accounts[1]);
+            assert.equal(accountDaiBalance.toString(),tokensToWei('200'),'account 1 dai balance is correct after unstaking');
+
+            tokenFarmContractDaiBalance = await daiToken.balanceOf(tokenFarm.address);
+            assert.equal(tokenFarmContractDaiBalance.toString(),tokensToWei('0'),'token farm contract dai balance is correct after unstaking');
+
+            stakedMappingBalance = await tokenFarm.stakedDaiBalance(accounts[1]);
+            assert.equal(stakedMappingBalance.toString(),tokensToWei('0'),'mapping addr1 dai balance is correct after unstaking');
+
+            isStakingMappingValue = await tokenFarm.isStaking(accounts[1]);
+            assert.equal(isStakingMappingValue.toString(),'false','mapping addr1 isStaking value is correct after unstaking all amount');
         })
     })
 
