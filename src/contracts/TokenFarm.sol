@@ -51,14 +51,14 @@ contract TokenFarm{
             uint stakedBalance = stakedDaiBalance[recpt];
             uint issueAmount;
             if(stakedBalance> 0){
-                if(stakedBalance <= 50)
-                    issueAmount = 10;
-                else if(stakedBalance <= 100)
-                    issueAmount = 20;
-                else if(stakedBalance <= 150)
-                    issueAmount = 30;
-                else
-                    issueAmount = 50;
+                if(stakedBalance>0 && stakedBalance <= (50 * 1 ether))
+                    issueAmount = (10 * 1 ether);
+                else if(stakedBalance>=51 && stakedBalance <= (100 * 1 ether))
+                    issueAmount = (20 * 1 ether);
+                else if(stakedBalance>=101 && stakedBalance <= (150 * 1 ether))
+                    issueAmount = (30 * 1 ether);
+                else if(stakedBalance > 150)
+                    issueAmount = (50 * 1 ether);
                 dappToken.transfer(recpt, issueAmount);
             }
         }
