@@ -98,4 +98,18 @@ contract('TokenFarm',(accounts)=>{
         })
     })
 
+    describe("testing the unstake tokens function",async()=>{
+        it('account and contract balance should be correct after unstake',async()=>{
+            await tokenFarm.unstakeDaiTokens(tokensToWei('100'),false,{ from: accounts[1] })//this from address will act as the msg.sender in the contract
+            const accountDaiBalance = await daiToken.balanceOf(accounts[1]);
+            assert.equal(accountDaiBalance.toString(),tokensToWei('150'),'account 1 dai balance is correct after unstaking');
+
+            const tokenFarmContractDaiBalance = await daiToken.balanceOf(tokenFarm.address);
+            assert.equal(tokenFarmContractDaiBalance.toString(),tokensToWei('50'),'token farm contract dai balance is correct after unstaking');
+
+            const stakedMappingBalance = await tokenFarm.stakedDaiBalance(accounts[1]);
+            assert.equal(stakedMappingBalance.toString(),tokensToWei('50'),'mapping addr1 dai balance is correct after unstaking');
+        })
+    })
+
 })
