@@ -14,6 +14,7 @@ const tokensToWei = (n) => {
 contract('TokenFarm',(accounts)=>{
 
     let daiToken,dappToken,tokenFarm;
+    let owner = accounts[0];
 
     before(async()=>{
         //in this block we have to do all the constructors tasks again testing it further
@@ -80,6 +81,20 @@ contract('TokenFarm',(accounts)=>{
 
             const hasStakedMappingValue = await tokenFarm.hasStaked(accounts[1]);
             assert.equal(hasStakedMappingValue.toString(),'true','mapping hasStaked value is correct after staking');
+        })
+    })
+
+    describe("testing the issue tokens function",async()=>{
+        it('account and contract balance should be correct after issuing',async()=>{
+            await tokenFarm.issueDappTokens({ from: owner })//this from address will act as the msg.sender in the contract
+            const accountDappBalance = await dappToken.balanceOf(accounts[1]);
+            assert.equal(accountDappBalance.toString(),tokensToWei('30'),'account 1 dapp balance is correct after issuing');
+            //150 staked in tests by accounts[1] so 30 issued
+
+            const tokenFarmContractDappBalance = await dappToken.balanceOf(tokenFarm.address);
+            assert.equal(tokenFarmContractDappBalance.toString(),tokensToWei('999970'),'token farm contract dapp balance is correct after issuing');
+
+            await tokenFarm.issueDappTokens({ from: accounts[1] }).should.be.rejected;
         })
     })
 
