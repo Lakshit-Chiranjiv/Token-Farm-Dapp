@@ -8,6 +8,16 @@ import TransactionLogs from './components/TransactionLogs';
 
 function App() {
 
+  const [userWalletAddress,setUserWalletAddress] = useState('');
+  const [transactionsArray,setTransactionsArray] = useState([]);
+  const [daiInputValue,setDaiInputValue] = useState(0);
+  const [daiBalance,setDaiBalance] = useState(0);
+  const [dappBalance,setDappBalance] = useState(0);
+  const [stakedDaiAmount,setStakedDaiAmount] = useState(0);
+  const [dappEarningRate,setDappEarningRate] = useState(0);
+  // const [unstakeAll,setUnstakeAll] = useState(false);
+  // const [stakeAll,setStakeAll] = useState(false);
+
   const tarr = [
     {
       type: 'stake',
