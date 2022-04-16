@@ -8012,12 +8012,13 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xFfA199dAAf679B51CF7eB40fACdec624f2b9509F",
-      "transactionHash": "0x7fcbe09c84882bd52d2fcd3876f76661059a6a22dfff9b3ada6de2f5b75f4813"
+      "address": "0x79E8CE7dE16540013bB1aA106F25F33394383816",
+      "transactionHash": "0x62cd795aba5beff0179611da9de205e9283f6135f13da3e3b217752adb34eaaa"
     }
   },
   "schemaVersion": "3.4.5",
-  "updatedAt": "2022-04-15T10:03:20.472Z",
+  "updatedAt": "2022-04-16T04:20:21.909Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
