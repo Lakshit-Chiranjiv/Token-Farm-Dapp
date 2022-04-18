@@ -20,6 +20,11 @@ function App() {
     console.log(accounts);
     setUserWalletAddress(accounts[0]);
 
+    const networkId = web3.networkVersion;
+    console.log(networkId);
+
+
+
   }
 
 
