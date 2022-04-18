@@ -1,12 +1,28 @@
 import React,{ useState,useEffect } from 'react';
 import './App.css';
+import Web3 from 'web3';
 import Header from './components/Header';
 import AddressBar from './components/AddressBar';
 import Balance from './components/Balance';
 import DaiInput from './components/DaiInput';
 import TransactionLogs from './components/TransactionLogs';
+import DaiToken from './artifacts/DaiToken.json';
+import DappToken from './artifacts/DappToken.json';
+
 
 function App() {
+
+  const loadBlockchainData = async() => {
+    const web3 = window.ethereum;
+  
+    // const accounts = await web3.eth.getAccounts();
+    const accounts = await web3.request({ method: 'eth_accounts' });
+    console.log(accounts);
+    setUserWalletAddress(accounts[0]);
+
+  }
+
+
 
   const [userWalletAddress,setUserWalletAddress] = useState('');
   const [transactionsArray,setTransactionsArray] = useState([]);
@@ -15,8 +31,15 @@ function App() {
   const [dappBalance,setDappBalance] = useState(0);
   const [stakedDaiAmount,setStakedDaiAmount] = useState(0);
   const [dappEarningRate,setDappEarningRate] = useState(0);
+  const [daiTokenContract,setDaiTokenContract] = useState(null);
+  const [dappTokenContract,setDappTokenContract] = useState(null);
+  const [tokenFarmContract,setTokenFarmContract] = useState(null);
   // const [unstakeAll,setUnstakeAll] = useState(false);
   // const [stakeAll,setStakeAll] = useState(false);
+
+  useEffect(()=>{
+    loadBlockchainData();
+  },[])
 
   const tarr = [
     {
@@ -40,7 +63,7 @@ function App() {
   return (
     <div className="container App">
       <Header/>
-      <AddressBar/>
+      <AddressBar address={userWalletAddress}/>
       <Balance/>
       <DaiInput/>
       <TransactionLogs transactions={tarr.reverse()}/>
