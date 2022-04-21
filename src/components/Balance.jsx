@@ -1,10 +1,10 @@
 import React from 'react'
 
-const Balance = ({daiBalance,dappBalance,stakedDaiAmount=0}) => {
+const Balance = ({daiBalance,dappBalance,stakedDaiAmount}) => {
 
     let currDappEarningRate = 0;
     const ethWeiFactor = 1000000000000000000;
-    const stkBalance = stakedDaiAmount/ethWeiFactor;
+    const stkBalance = stakedDaiAmount;
     if(stkBalance>0 && stkBalance<=50)
       currDappEarningRate = 10;
     else if(stkBalance>50 && stkBalance<=100)
@@ -29,7 +29,7 @@ const Balance = ({daiBalance,dappBalance,stakedDaiAmount=0}) => {
     <div className='d-flex justify-content-center gap-3 my-4'>
         <div className='text-center bg-dark text-white p-2 rounded w-50'>
             <h3 className='mb-2'>Staked DAI Amount</h3>
-            <h5>{stakedDaiAmount/ethWeiFactor}</h5>
+            <h5>{stakedDaiAmount}</h5>
         </div>
         <div className='text-center bg-dark text-white p-2 rounded w-50'>
             <h3 className='mb-2'>Current DAPP earning rate</h3>
