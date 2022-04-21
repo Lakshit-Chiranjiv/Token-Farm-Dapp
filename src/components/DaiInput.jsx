@@ -1,6 +1,10 @@
 import React from 'react'
+import Web3 from 'web3';
 
-const DaiInput = ({setDaiInputValue}) => {
+const DaiInput = ({daiInputValue,setDaiInputValue,stakeDaiTokens}) => {
+
+  const web3 = new Web3(window.ethereum);
+  
   return (
     <>
         <div className="input-group m-2 p-4 bg-primary rounded mx-auto w-50">
@@ -9,7 +13,11 @@ const DaiInput = ({setDaiInputValue}) => {
         </div>
         <div className="d-grid col-6 mx-auto gap-2">
           <div className="d-flex gap-2">
-            <button className="btn btn-success col-6">Stake</button>
+            <button className="btn btn-success col-6" onClick={()=>{
+              let stakeAmount = web3.utils.toWei(daiInputValue,'ether');
+              stakeDaiTokens(stakeAmount)
+              setDaiInputValue(0);
+              }}>Stake</button>
             <button className="btn btn-danger col-6">Unstake</button>
           </div>
           <div className="d-flex gap-2">
