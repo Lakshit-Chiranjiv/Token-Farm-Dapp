@@ -119,6 +119,20 @@ function App() {
     })
   }
 
+  const unstakeDaiTokens = (amount) => {
+    console.log("unstake",amount,stakedDaiAmount,(amount>stakedDaiAmount),(amount-stakedDaiAmount));
+    let totalUnstake = amount===stakedDaiAmount;
+    if((amount/ethWeiFactor) > (stakedDaiAmount/ethWeiFactor)){
+      window.alert("Haven't staked that much amount...so can't unstake");
+      return;
+    }
+    setLoadingPage(true);
+    tokenFarmContract.methods.unstakeDaiTokens(amount,totalUnstake).send({ from: userWalletAddress }).on('transactionHash',(hash)=> {
+      getBalances();
+      setLoadingPage(false)
+  })
+}
+
   const tarr = [
     {
       type: 'stake',
@@ -159,7 +173,7 @@ function App() {
           <Balance daiBalance={daiBalance} dappBalance={dappBalance} stakedDaiAmount={stakedDaiAmount}/>
         </>
       }
-      <DaiInput daiInputValue={daiInputValue} setDaiInputValue={setDaiInputValue} stakeDaiTokens={stakeDaiTokens}/>
+      <DaiInput daiInputValue={daiInputValue} setDaiInputValue={setDaiInputValue} stakeDaiTokens={stakeDaiTokens} unstakeDaiTokens={unstakeDaiTokens}/>
       <TransactionLogs transactions={tarr.reverse()}/>
       <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit ducimus cumque quibusdam vel dolorem voluptas ipsam officiis laudantium dicta deserunt? Sequi tempore saepe magnam incidunt similique, unde atque quo dignissimos?</p>
     </div>
