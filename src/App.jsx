@@ -9,6 +9,7 @@ import TransactionLogs from './components/TransactionLogs';
 import DaiToken from './artifacts/DaiToken.json';
 import DappToken from './artifacts/DappToken.json';
 import TokenFarm from './artifacts/TokenFarm.json';
+import axios from 'axios';
 
 function App() {
 
@@ -45,7 +46,6 @@ function App() {
       setDappTokenContract(dappToken);
       const dappTokenBalance = await dappToken.methods.balanceOf(userAddress).call();
       setDappBalance(dappTokenBalance);
-      // console.log(dappTokenBalance);
     }
     else{
       window.alert("Dapp token contract not yet deployed on this network");
@@ -88,16 +88,24 @@ function App() {
   const [daiBalance,setDaiBalance] = useState(0);
   const [dappBalance,setDappBalance] = useState(0);
   const [stakedDaiAmount,setStakedDaiAmount] = useState(0);
-  // const [dappEarningRate,setDappEarningRate] = useState(0);
   const [daiTokenContract,setDaiTokenContract] = useState(null);
   const [dappTokenContract,setDappTokenContract] = useState(null);
   const [tokenFarmContract,setTokenFarmContract] = useState(null);
-  // const [unstakeAll,setUnstakeAll] = useState(false);
-  // const [stakeAll,setStakeAll] = useState(false);
   const [loadingPage,setLoadingPage] = useState(true);
+
+  const loadTransactions = async () => {
+    const transcData = await axios.get('http://localhost:5000/trancs')
+    console.log(transcData.data);
+    setTransactionsArray(transcData.data);
+  }
+
+  const addTransaction = async (reqBody) => {
+    await axios.post('http://localhost:5000/newtransaction',reqBody)
+  }
 
   useEffect(()=>{
     loadBlockchainData();
+    loadTransactions();
   },[])
 
 
@@ -108,6 +116,8 @@ function App() {
         getBalances();
         setLoadingPage(false)
         setTransactionsArray([...transactionsArray,{ type: 'stake',amount: (amount/ethWeiFactor) }]);
+        addTransaction({ type: 'stake',amount: (amount/ethWeiFactor) })
+        loadTransactions();
       })
     })
   }
@@ -123,6 +133,8 @@ function App() {
       getBalances();
       setLoadingPage(false)
       setTransactionsArray([...transactionsArray,{ type: 'unstake',amount: (amount/ethWeiFactor) }]);
+      addTransaction({ type: 'unstake',amount: (amount/ethWeiFactor) })
+      loadTransactions();
   })
 }
 
@@ -134,6 +146,7 @@ function App() {
     console.log("stake balance = "+stakedDaiAmount);
     console.log("daiInputValue = "+daiInputValue);
     console.log(transactionsArray);
+    loadTransactions();
   }
 
   return (
@@ -149,7 +162,7 @@ function App() {
         </>
       }
       <DaiInput daiInputValue={daiInputValue} setDaiInputValue={setDaiInputValue} stakeDaiTokens={stakeDaiTokens} unstakeDaiTokens={unstakeDaiTokens} daiBalance={daiBalance} stakedDaiAmount={stakedDaiAmount}/>
-      <TransactionLogs transactions={transactionsArray.reverse()}/>
+      <TransactionLogs transactions={transactionsArray}/>
       <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit ducimus cumque quibusdam vel dolorem voluptas ipsam officiis laudantium dicta deserunt? Sequi tempore saepe magnam incidunt similique, unde atque quo dignissimos?</p>
     </div>
   );
