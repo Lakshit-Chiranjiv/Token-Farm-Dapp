@@ -10,7 +10,6 @@ import DaiToken from './artifacts/DaiToken.json';
 import DappToken from './artifacts/DappToken.json';
 import TokenFarm from './artifacts/TokenFarm.json';
 
-
 function App() {
 
   const loadBlockchainData = async() => {
@@ -72,14 +71,10 @@ function App() {
   const getBalances = async() => {
     setLoadingPage(true);
     const daiTokenBalance = await daiTokenContract.methods.balanceOf(userWalletAddress).call();
-    console.log("dai token bal "+daiTokenBalance);
     setDaiBalance(daiTokenBalance);
-    console.log(200,"bye");
     const dappTokenBalance = await dappTokenContract.methods.balanceOf(userWalletAddress).call();
-    console.log("dapp token bal "+dappTokenBalance);
     setDappBalance(dappTokenBalance);
     const stakingBalance = await tokenFarmContract.methods.stakedDaiBalance(userWalletAddress).call();
-    console.log("stake bal "+stakingBalance);
     setStakedDaiAmount(stakingBalance);
     setLoadingPage(false);
     console.log("done!!")
@@ -111,16 +106,13 @@ function App() {
     daiTokenContract.methods.approve(tokenFarmContract._address,amount).send({ from: userWalletAddress }).on('transactionHash',(hash) => {
       tokenFarmContract.methods.stakeDaiTokens(amount).send({ from: userWalletAddress }).on('transactionHash',(hash)=> {
         getBalances();
-        console.log(daiBalance,56);
         setLoadingPage(false)
-
-        console.log("after stake "+daiBalance,dappBalance,stakedDaiAmount);
+        setTransactionsArray([...transactionsArray,{ type: 'stake',amount: (amount/ethWeiFactor) }]);
       })
     })
   }
 
   const unstakeDaiTokens = (amount) => {
-    console.log("unstake",amount,stakedDaiAmount,(amount>stakedDaiAmount),(amount-stakedDaiAmount));
     let totalUnstake = amount===stakedDaiAmount;
     if((amount/ethWeiFactor) > (stakedDaiAmount/ethWeiFactor)){
       window.alert("Haven't staked that much amount...so can't unstake");
@@ -130,27 +122,9 @@ function App() {
     tokenFarmContract.methods.unstakeDaiTokens(amount,totalUnstake).send({ from: userWalletAddress }).on('transactionHash',(hash)=> {
       getBalances();
       setLoadingPage(false)
+      setTransactionsArray([...transactionsArray,{ type: 'unstake',amount: (amount/ethWeiFactor) }]);
   })
 }
-
-  const tarr = [
-    {
-      type: 'stake',
-      amount: 400
-    },
-    {
-      type: 'unstake',
-      amount: 130
-    },
-    {
-      type: 'stake',
-      amount: 90
-    },
-    {
-      type: 'earn',
-      amount: 70
-    }
-  ]
 
   const checkValues = () => {
     console.log("wallet address = "+userWalletAddress);
@@ -158,7 +132,8 @@ function App() {
     console.log(500/24)
     console.log("dapp balance = "+dappBalance);
     console.log("stake balance = "+stakedDaiAmount);
-
+    console.log("daiInputValue = "+daiInputValue);
+    console.log(transactionsArray);
   }
 
   return (
@@ -173,8 +148,8 @@ function App() {
           <Balance daiBalance={daiBalance} dappBalance={dappBalance} stakedDaiAmount={stakedDaiAmount}/>
         </>
       }
-      <DaiInput daiInputValue={daiInputValue} setDaiInputValue={setDaiInputValue} stakeDaiTokens={stakeDaiTokens} unstakeDaiTokens={unstakeDaiTokens}/>
-      <TransactionLogs transactions={tarr.reverse()}/>
+      <DaiInput daiInputValue={daiInputValue} setDaiInputValue={setDaiInputValue} stakeDaiTokens={stakeDaiTokens} unstakeDaiTokens={unstakeDaiTokens} daiBalance={daiBalance} stakedDaiAmount={stakedDaiAmount}/>
+      <TransactionLogs transactions={transactionsArray.reverse()}/>
       <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fugit ducimus cumque quibusdam vel dolorem voluptas ipsam officiis laudantium dicta deserunt? Sequi tempore saepe magnam incidunt similique, unde atque quo dignissimos?</p>
     </div>
   );
