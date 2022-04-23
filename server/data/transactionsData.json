@@ -1,0 +1,10 @@
+[
+    {
+        "type": "stake",
+        "amount": 10
+    },
+    {
+        "type": "unstake",
+        "amount": 4
+    }
+]
